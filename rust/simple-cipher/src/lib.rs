@@ -1,3 +1,5 @@
+use rand::Rng;
+
 pub fn encode(key: &str, s: &str) -> Option<String> {
     if key.is_empty() || key.chars().any(|c| !c.is_ascii_lowercase()) {
         return None;
@@ -38,8 +40,14 @@ pub fn decode(key: &str, s: &str) -> Option<String> {
 }
 
 pub fn encode_random(s: &str) -> (String, String) {
-    unimplemented!(
-        "Generate random key with only a-z chars and encode {}. Return tuple (key, encoded s)",
-        s
-    )
+    let mut rng = rand::thread_rng();
+    let key: String = (0..1000)
+        .map(|_| {
+            let offset = rng.gen_range(0, 26);
+            (b'a' + offset) as char
+        })
+        .collect();
+
+    let encoded = encode(&key, s).unwrap();
+    (key, encoded)
 }
